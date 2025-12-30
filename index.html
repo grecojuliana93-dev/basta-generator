@@ -25,7 +25,7 @@
         }
 
         body {
-            font-family: sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
             display: flex;
@@ -40,8 +40,16 @@
         .title-group h1 { margin: 0; font-size: 24px; font-weight: 800; }
         .title-group p { margin: 0; font-size: 10px; opacity: 0.6; text-transform: uppercase; }
         
-        .controls { display: flex; gap: 10px; }
-        .icon-btn { background: none; border: none; font-size: 22px; cursor: pointer; padding: 5px; }
+        .controls { display: flex; gap: 8px; align-items: center; }
+        .font-select { 
+            padding: 5px; 
+            border-radius: 5px; 
+            border: 1px solid var(--border-color); 
+            background: var(--card-bg); 
+            color: var(--text-color);
+            font-size: 12px;
+        }
+        .theme-toggle { background: none; border: none; font-size: 20px; cursor: pointer; }
 
         .card {
             background: var(--card-bg);
@@ -79,7 +87,7 @@
             border-radius: 10px;
             margin-bottom: 15px;
             resize: none;
-            font-family: sans-serif;
+            font-family: inherit;
             font-size: 16px;
             box-sizing: border-box;
         }
@@ -103,8 +111,15 @@
             <p>Created by Miko Mempin</p>
         </div>
         <div class="controls">
-            <button class="icon-btn" onclick="cycleFont()" title="Change Font">🔤</button>
-            <button class="icon-btn" onclick="toggleTheme()" id="themeIcon">☀️</button>
+            <select id="fontPicker" class="font-select" onchange="draw()">
+                <option value="sans-serif">Default Sans</option>
+                <option value="serif">Classic Serif</option>
+                <option value="monospace">Mono Space</option>
+                <option value="cursive">Cursive</option>
+                <option value="Impact">Impact</option>
+                <option value="Arial">Arial</option>
+            </select>
+            <button class="theme-toggle" onclick="toggleTheme()" id="themeIcon">☀️</button>
         </div>
     </div>
 
@@ -130,17 +145,7 @@ Miko Mempin 🫶</textarea>
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         const input = document.getElementById('memeInput');
-
-        // Font List
-        const fonts = [
-            "sans-serif",
-            "serif",
-            "monospace",
-            "cursive",
-            "Impact"
-        ];
-        
-        let currentFontIndex = parseInt(localStorage.getItem('fontIndex')) || 0;
+        const fontPicker = document.getElementById('fontPicker');
 
         // Theme memory
         const savedTheme = localStorage.getItem('theme') || 'light';
@@ -155,12 +160,6 @@ Miko Mempin 🫶</textarea>
             document.getElementById('themeIcon').innerText = next === 'light' ? '☀️' : '🌙';
         }
 
-        function cycleFont() {
-            currentFontIndex = (currentFontIndex + 1) % fonts.length;
-            localStorage.setItem('fontIndex', currentFontIndex);
-            draw();
-        }
-
         function autoGrow(el) {
             el.style.height = "auto";
             el.style.height = (el.scrollHeight) + "px";
@@ -171,9 +170,10 @@ Miko Mempin 🫶</textarea>
             const lines = input.value.split('\n');
             const fontSize = 100; 
             const lineHeight = fontSize * 1.1;
-            const currentFont = fonts[currentFontIndex];
+            const selectedFont = fontPicker.value;
 
-            ctx.font = `${fontSize}px ${currentFont}`;
+            // Use simple font weights
+            ctx.font = `normal ${fontSize}px ${selectedFont}`;
             
             let maxWidth = 0;
             lines.forEach(line => {
@@ -184,18 +184,24 @@ Miko Mempin 🫶</textarea>
             canvas.width = maxWidth + 40; 
             canvas.height = (lines.length * lineHeight) + 20;
 
+            // Apply subtle blur filter for that "screenshot" aesthetic
+            ctx.filter = 'blur(0.5px) contrast(1.1)';
+
             // Background
             ctx.fillStyle = "white"; 
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             // Text
-            ctx.font = `${fontSize}px ${currentFont}`;
+            ctx.font = `normal ${fontSize}px ${selectedFont}`;
             ctx.fillStyle = "black";
             ctx.textBaseline = "top";
 
             lines.forEach((line, i) => {
                 ctx.fillText(line, 20, (i * lineHeight) + 10);
             });
+            
+            // Reset filter so it doesn't stack on redraw
+            ctx.filter = 'none';
         }
 
         function download() {
