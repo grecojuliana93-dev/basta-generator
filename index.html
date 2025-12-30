@@ -41,7 +41,7 @@
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--overlay-bg); display: flex; align-items: center;
             justify-content: center; z-index: 10000; backdrop-filter: blur(15px);
-            display: none; /* Controlled by JS */
+            display: none;
         }
         .modal-box {
             background: var(--card-bg); width: 85%; max-width: 350px;
@@ -62,9 +62,21 @@
             border: 1px solid var(--border-color); margin-bottom: 20px;
         }
 
+        /* DYNAMIC OUTPUT PAD */
         .canvas-wrap {
-            width: 100%; background: #ffffff; border-radius: 20px;
-            overflow: hidden; margin-bottom: 20px; display: flex; justify-content: flex-start;
+            width: 100%; 
+            background: #ffffff; 
+            border-radius: 20px;
+            overflow: auto; /* Adds scroll if text is extremely wide */
+            margin-bottom: 20px; 
+            display: flex; 
+            justify-content: flex-start;
+        }
+
+        canvas {
+            display: block;
+            height: auto;
+            image-rendering: -webkit-optimize-contrast; /* Keeps text sharp */
         }
 
         textarea {
@@ -78,10 +90,9 @@
         .dl-btn { background: var(--btn-bg); color: var(--btn-text); border: none; border-radius: 15px; font-weight: 700; cursor: pointer; font-size: 11px; }
         .filename { padding: 12px; border-radius: 15px; border: 1px solid var(--border-color); background: transparent; color: var(--text-color); font-size: 13px; }
 
-        /* INFO SECTIONS */
         .info-section { width: 100%; max-width: 500px; margin-top: 20px; color: var(--text-color); }
         .info-section h3 { font-size: 18px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 15px; }
-        .info-section p, .info-section li { font-size: 14px; opacity: 0.7; line-height: 1.6; }
+        .info-section p { font-size: 14px; opacity: 0.7; line-height: 1.6; }
     </style>
 </head>
 <body id="mainBody">
@@ -91,8 +102,8 @@
             <h2 style="margin-top:0">Guidelines</h2>
             <ul style="text-align: left; font-size: 13px; opacity: 0.8; margin-bottom: 20px;">
                 <li>Usage: Personal use only.</li>
-                <li>Content: Avoid offensive text.</li>
-                <li>Aesthetic: The blur is intentional.</li>
+                <li>Alignment: Forced Left for clean look.</li>
+                <li>Dynamic: Output pad adjusts to text length.</li>
             </ul>
             <button style="width:100%; padding:15px; border-radius:15px; border:none; background:var(--btn-bg); color:var(--btn-text); font-weight:bold; cursor:pointer" onclick="closeTerms()">I AGREE</button>
         </div>
@@ -129,8 +140,8 @@ Miko Mempin 🫶</textarea>
 
     <div class="info-section">
         <h3>How to Use</h3>
-        <p>1. Type your text. 2. Select Font. 3. Download or Share.</p>
-        <p>Press 🔄 to reset the count, clear text, and see Guidelines again.</p>
+        <p>1. Type text. 2. Select Font. 3. Download/Share.</p>
+        <p>🔄 resets count and clears text.</p>
     </div>
 
     <script>
@@ -141,7 +152,6 @@ Miko Mempin 🫶</textarea>
         const body = document.getElementById('mainBody');
         const modal = document.getElementById('termsModal');
 
-        // Check acceptance
         if (localStorage.getItem('basta_terms_accepted') !== 'true') {
             modal.style.display = 'flex';
         }
@@ -160,12 +170,11 @@ Miko Mempin 🫶</textarea>
             document.getElementById('themeIcon').innerText = body.classList.contains('light-mode') ? '☀️' : '🌙';
         }
 
-        // FULL REFRESH LOGIC
         function hardReset() {
-            if(confirm("This will reset the count, clear all memory, and show guidelines again. Continue?")) {
+            if(confirm("Reset everything?")) {
                 localStorage.removeItem('basta_terms_accepted');
                 localStorage.setItem('basta_uses', '0');
-                location.reload(); // Reloads page to show terms and reset everything
+                location.reload();
             }
         }
 
@@ -183,24 +192,29 @@ Miko Mempin 🫶</textarea>
             
             let maxW = 0;
             lines.forEach(l => {
-                const w = ctx.measureText(l).width;
+                const metrics = ctx.measureText(l);
+                const w = metrics.width;
                 if(w > maxW) maxW = w;
             });
 
-            canvas.width = maxW + 100;
-            canvas.height = (lines.length * (size * 1.2)) + 80;
+            // ANTI-CUT LOGIC: Adding extra padding (120px) to width and (100px) to height
+            canvas.width = maxW + 120;
+            canvas.height = (lines.length * (size * 1.25)) + 100;
 
+            // Paint Background
             ctx.fillStyle = "white";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
+            // Text Settings
             ctx.filter = 'blur(0.4px) contrast(1.1)';
             ctx.fillStyle = "black";
             ctx.font = `300 ${size}px ${font}`;
             ctx.textBaseline = "top";
-            ctx.textAlign = "left"; // FORCED LEFT ALIGNMENT
+            ctx.textAlign = "left";
 
             lines.forEach((l, i) => {
-                ctx.fillText(l, 50, (i * (size * 1.2)) + 40);
+                // X: 60px padding from left, Y: 50px padding from top
+                ctx.fillText(l, 60, (i * (size * 1.25)) + 50);
             });
         }
 
