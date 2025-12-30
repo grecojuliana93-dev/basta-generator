@@ -25,7 +25,7 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, sans-serif;
+            font-family: sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
             display: flex;
@@ -38,11 +38,10 @@
 
         .header { width: 100%; max-width: 500px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .title-group h1 { margin: 0; font-size: 24px; font-weight: 800; }
-        .title-group p { margin: 0; font-size: 10px; opacity: 0.6; text-transform: uppercase; letter-spacing: 1px; }
+        .title-group p { margin: 0; font-size: 10px; opacity: 0.6; text-transform: uppercase; }
         
         .controls { display: flex; gap: 10px; }
-        .icon-btn { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; font-size: 18px; cursor: pointer; padding: 8px; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
-        .icon-btn:hover { background: var(--bg-color); }
+        .icon-btn { background: none; border: none; font-size: 22px; cursor: pointer; padding: 5px; }
 
         .card {
             background: var(--card-bg);
@@ -80,7 +79,7 @@
             border-radius: 10px;
             margin-bottom: 15px;
             resize: none;
-            font-family: inherit;
+            font-family: sans-serif;
             font-size: 16px;
             box-sizing: border-box;
         }
@@ -105,7 +104,7 @@
         </div>
         <div class="controls">
             <button class="icon-btn" onclick="cycleFont()" title="Change Font">🔤</button>
-            <button class="icon-btn" onclick="toggleTheme()" id="themeIcon" title="Toggle Theme">☀️</button>
+            <button class="icon-btn" onclick="toggleTheme()" id="themeIcon">☀️</button>
         </div>
     </div>
 
@@ -115,8 +114,10 @@
         </div>
 
         <label>Enter Message</label>
-        <textarea id="memeInput" oninput="autoGrow(this)">Type your
-message here... 🫶</textarea>
+        <textarea id="memeInput" oninput="autoGrow(this)">Made
+with 
+love by 
+Miko Mempin 🫶</textarea>
 
         <label>File Name</label>
         <div class="footer-actions">
@@ -129,20 +130,19 @@ message here... 🫶</textarea>
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         const input = document.getElementById('memeInput');
-        
+
         // Font List
         const fonts = [
-            { name: "Default", family: "Inter, -apple-system, Arial, sans-serif" },
-            { name: "Modern Mono", family: "'Courier New', Courier, monospace" },
-            { name: "Classic Serif", family: "Georgia, 'Times New Roman', serif" },
-            { name: "Impactful", family: "Impact, Charcoal, sans-serif" },
-            { name: "Handwritten", family: "'Comic Sans MS', cursive, sans-serif" },
-            { name: "Bold Minimal", family: "'Helvetica Neue', Helvetica, Arial, sans-serif" }
+            "sans-serif",
+            "serif",
+            "monospace",
+            "cursive",
+            "Impact"
         ];
-
+        
         let currentFontIndex = parseInt(localStorage.getItem('fontIndex')) || 0;
 
-        // Theme initialization
+        // Theme memory
         const savedTheme = localStorage.getItem('theme') || 'light';
         document.body.setAttribute('data-theme', savedTheme);
         document.getElementById('themeIcon').innerText = savedTheme === 'light' ? '☀️' : '🌙';
@@ -170,12 +170,10 @@ message here... 🫶</textarea>
         function draw() {
             const lines = input.value.split('\n');
             const fontSize = 100; 
-            const lineHeight = fontSize * 1.2;
-            const fontObj = fonts[currentFontIndex];
+            const lineHeight = fontSize * 1.1;
+            const currentFont = fonts[currentFontIndex];
 
-            // Set weight based on font choice (Default/Impact/Bold Minimal use bolder weights)
-            const weight = (currentFontIndex === 3 || currentFontIndex === 5) ? "900" : "normal";
-            ctx.font = `${weight} ${fontSize}px ${fontObj.family}`;
+            ctx.font = `${fontSize}px ${currentFont}`;
             
             let maxWidth = 0;
             lines.forEach(line => {
@@ -183,28 +181,26 @@ message here... 🫶</textarea>
                 if (w > maxWidth) maxWidth = w;
             });
 
-            // Calculate Canvas Size
-            canvas.width = maxWidth + 80; 
-            canvas.height = (lines.length * lineHeight) + 60;
+            canvas.width = maxWidth + 40; 
+            canvas.height = (lines.length * lineHeight) + 20;
 
-            // Draw White Background
+            // Background
             ctx.fillStyle = "white"; 
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Text Styles
-            ctx.font = `${weight} ${fontSize}px ${fontObj.family}`;
+            // Text
+            ctx.font = `${fontSize}px ${currentFont}`;
             ctx.fillStyle = "black";
             ctx.textBaseline = "top";
 
             lines.forEach((line, i) => {
-                ctx.fillText(line, 40, (i * lineHeight) + 30);
+                ctx.fillText(line, 20, (i * lineHeight) + 10);
             });
         }
 
         function download() {
             const link = document.createElement('a');
-            const name = document.getElementById('filenameInput').value || 'basta-meme';
-            link.download = name + '.png';
+            link.download = (document.getElementById('filenameInput').value || 'basta-meme') + '.png';
             link.href = canvas.toDataURL('image/png');
             link.click();
         }
