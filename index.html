@@ -6,13 +6,12 @@
     <title>BASTA GENERATOR</title>
     <style>
         :root {
-            --bg-color: #000000;
+            --bg-color: #0b0b0b;
             --card-bg: #161616;
             --text-color: #ffffff;
             --border-color: #2c2c2c;
             --btn-bg: #ffffff;
             --btn-text: #000000;
-            --overlay-bg: rgba(0,0,0,0.95);
         }
 
         body.light-mode {
@@ -39,7 +38,7 @@
         /* MODAL */
         #termsModal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--overlay-bg); display: flex; align-items: center;
+            background: rgba(0,0,0,0.95); display: flex; align-items: center;
             justify-content: center; z-index: 10000; backdrop-filter: blur(15px);
             display: none;
         }
@@ -51,31 +50,32 @@
 
         /* HEADER */
         .header { width: 100%; max-width: 500px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .controls { display: flex; gap: 10px; align-items: center; }
-        .font-picker { padding: 8px; border-radius: 10px; background: var(--card-bg); color: var(--text-color); border: 1px solid var(--border-color); font-size: 12px; }
-        .icon-btn { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--text-color); padding: 5px; }
+        .controls { display: flex; gap: 15px; align-items: center; }
+        .icon-btn { background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-color); }
 
         /* MAIN CARD */
         .card {
             background: var(--card-bg); width: 100%; max-width: 500px;
             border-radius: 30px; padding: 25px; box-sizing: border-box;
-            border: 1px solid var(--border-color); margin-bottom: 20px;
+            border: 1px solid var(--border-color);
         }
 
-        /* THE GROWING WRAPPER */
-        .canvas-wrap {
-            width: 100%; 
-            background: transparent; 
-            margin-bottom: 20px; 
-            display: flex; 
-            justify-content: flex-start; /* Ensures it grows from the left */
-            overflow-x: auto;
+        /* THE FIX: Centered and responsive container */
+        .pad-area {
+            width: 100%;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center; /* Centers the pad */
+            align-items: center;
+            overflow: hidden; /* Removes the slide bars */
         }
 
         canvas {
+            background: white;
+            border-radius: 10px;
             display: block;
-            background: white; /* This is the pad that grows/shrinks */
-            border-radius: 8px;
+            max-width: 100%; /* Shrinks the view to fit the card width */
+            height: auto;   /* Maintains aspect ratio */
         }
 
         textarea {
@@ -86,11 +86,11 @@
         }
 
         .actions { display: grid; grid-template-columns: 1fr 130px; gap: 10px; }
-        .dl-btn { background: var(--btn-bg); color: var(--btn-text); border: none; border-radius: 15px; font-weight: 700; cursor: pointer; font-size: 11px; }
-        .filename { padding: 12px; border-radius: 15px; border: 1px solid var(--border-color); background: transparent; color: var(--text-color); font-size: 13px; }
+        .dl-btn { background: var(--btn-bg); color: var(--btn-text); border: none; border-radius: 15px; font-weight: bold; cursor: pointer; font-size: 11px; height: 45px; }
+        .filename { padding: 12px; border-radius: 15px; border: 1px solid var(--border-color); background: transparent; color: var(--text-color); font-size: 13px; height: 45px; box-sizing: border-box; }
 
-        .info-section { width: 100%; max-width: 500px; margin-top: 20px; color: var(--text-color); }
-        .info-section h3 { font-size: 18px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 15px; }
+        .info-section { width: 100%; max-width: 500px; margin-top: 30px; color: var(--text-color); }
+        .info-section h3 { font-size: 18px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
         .info-section p { font-size: 14px; opacity: 0.7; line-height: 1.6; }
     </style>
 </head>
@@ -99,10 +99,7 @@
     <div id="termsModal">
         <div class="modal-box">
             <h2 style="margin-top:0">Guidelines</h2>
-            <ul style="text-align: left; font-size: 13px; opacity: 0.8; margin-bottom: 20px;">
-                <li>Usage: Personal use only.</li>
-                <li>Made with Love by Miko Mempin 🫶</li>
-            </ul>
+            <p style="opacity:0.7; font-size:14px">Your image will be centered and fully visible. Agree to continue.</p>
             <button style="width:100%; padding:15px; border-radius:15px; border:none; background:var(--btn-bg); color:var(--btn-text); font-weight:bold; cursor:pointer" onclick="closeTerms()">I AGREE</button>
         </div>
     </div>
@@ -110,55 +107,53 @@
     <div class="header">
         <div>
             <h1 style="margin:0; font-size:24px; letter-spacing:-1px">BASTA GENERATOR</h1>
-            <div id="counterDisplay" style="font-size:10px; opacity:0.5">Used: 0 times</div>
+            <div id="countDisplay" style="font-size:10px; opacity:0.5">Used: 0 times</div>
         </div>
         <div class="controls">
-            <select id="fontSel" class="font-picker" onchange="render()">
-                <option value="system-ui">No Font (Normal)</option>
-                <option value="serif">Classic Serif</option>
-                <option value="monospace">Monospace</option>
-            </select>
             <button class="icon-btn" onclick="hardReset()">🔄</button>
             <button class="icon-btn" onclick="toggleDark()" id="themeIcon">🌙</button>
         </div>
     </div>
 
     <div class="card">
-        <div class="canvas-wrap"><canvas id="memeCanvas"></canvas></div>
+        <div class="pad-area">
+            <canvas id="memeCanvas"></canvas>
+        </div>
         <label style="font-size:11px; opacity:0.5; display:block; margin-bottom:8px">Enter Message</label>
         <textarea id="textIn" oninput="autoSize(this)">Made With 
 Love By 
 Miko Mempin 🫶</textarea>
         <div class="actions">
-            <input type="text" id="fileIn" class="filename" placeholder="filename...">
+            <input type="text" id="fileIn" class="filename" placeholder="basta-meme">
             <button class="dl-btn" onclick="doDownload()">DOWNLOAD PNG</button>
         </div>
-        <button style="width:100%; margin-top:10px; padding:12px; border-radius:15px; background:#222; color:#fff; border:none; font-size:12px; cursor:pointer" onclick="doShare()">📤 SHARE / COPY IMAGE</button>
     </div>
 
     <div class="info-section">
         <h3>How to Use</h3>
-        <p>1. Type text (the white pad will grow or shrink to fit).<br>2. Use 🔄 to reset count and show terms.</p>
+        <p>1. Type your message below.<br>2. The white box centers and fits your screen automatically.<br>3. Hit Download to save.</p>
+        <h3>Example Output</h3>
+        <div style="background:white; color:black; padding:15px; border-radius:10px; text-align:left; font-size:14px; width:fit-content;">
+            Basta generator works<br>perfectly. 🫶
+        </div>
     </div>
 
     <script>
         const canvas = document.getElementById('memeCanvas');
         const ctx = canvas.getContext('2d');
         const textIn = document.getElementById('textIn');
-        const fontSel = document.getElementById('fontSel');
         const body = document.getElementById('mainBody');
-        const modal = document.getElementById('termsModal');
 
-        if (localStorage.getItem('basta_terms_accepted') !== 'true') {
-            modal.style.display = 'flex';
+        if (localStorage.getItem('basta_terms_v2') !== 'true') {
+            document.getElementById('termsModal').style.display = 'flex';
         }
 
-        let usedCount = parseInt(localStorage.getItem('basta_uses')) || 0;
-        document.getElementById('counterDisplay').innerText = `Used: ${usedCount} times`;
+        let count = parseInt(localStorage.getItem('basta_count')) || 0;
+        document.getElementById('countDisplay').innerText = `Used: ${count} times`;
 
         function closeTerms() {
-            localStorage.setItem('basta_terms_accepted', 'true');
-            modal.style.display = 'none';
+            localStorage.setItem('basta_terms_v2', 'true');
+            document.getElementById('termsModal').style.display = 'none';
             autoSize(textIn);
         }
 
@@ -169,8 +164,7 @@ Miko Mempin 🫶</textarea>
 
         function hardReset() {
             if(confirm("Reset everything?")) {
-                localStorage.removeItem('basta_terms_accepted');
-                localStorage.setItem('basta_uses', '0');
+                localStorage.clear();
                 location.reload();
             }
         }
@@ -184,10 +178,7 @@ Miko Mempin 🫶</textarea>
         function render() {
             const lines = textIn.value.split('\n');
             const size = 100;
-            const font = fontSel.value;
-            
-            // Temporary set font to measure
-            ctx.font = `300 ${size}px ${font}`;
+            ctx.font = `300 ${size}px -apple-system, sans-serif`;
             
             let maxW = 0;
             lines.forEach(l => {
@@ -195,23 +186,23 @@ Miko Mempin 🫶</textarea>
                 if(w > maxW) maxW = w;
             });
 
-            // THE KEY FIX: Canvas dimensions are updated to hug the text
-            canvas.width = maxW + 80; 
-            canvas.height = (lines.length * (size * 1.2)) + 60;
+            // Set canvas size based on text
+            canvas.width = maxW + 100; 
+            canvas.height = (lines.length * (size * 1.25)) + 80;
 
-            // Clear and draw background (The Pad)
+            // Paint White Pad
             ctx.fillStyle = "white";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            // Text Settings
-            ctx.filter = 'blur(0.4px) contrast(1.1)';
+            // Draw Text
+            ctx.filter = 'blur(0.5px) contrast(1.1)';
             ctx.fillStyle = "black";
-            ctx.font = `300 ${size}px ${font}`;
+            ctx.font = `300 ${size}px -apple-system, sans-serif`;
             ctx.textBaseline = "top";
             ctx.textAlign = "left";
 
             lines.forEach((l, i) => {
-                ctx.fillText(l, 40, (i * (size * 1.2)) + 30);
+                ctx.fillText(l, 50, (i * (size * 1.25)) + 40);
             });
         }
 
@@ -220,26 +211,15 @@ Miko Mempin 🫶</textarea>
             link.download = document.getElementById('fileIn').value || 'basta';
             link.href = canvas.toDataURL();
             link.click();
-            addCount();
+            count++;
+            localStorage.setItem('basta_count', count);
+            document.getElementById('countDisplay').innerText = `Used: ${count} times`;
         }
 
-        function doShare() {
-            canvas.toBlob(blob => {
-                const item = new ClipboardItem({ "image/png": blob });
-                navigator.clipboard.write([item]).then(() => {
-                    alert("Copied!");
-                    addCount();
-                });
-            });
-        }
-
-        function addCount() {
-            usedCount++;
-            localStorage.setItem('basta_uses', usedCount);
-            document.getElementById('counterDisplay').innerText = `Used: ${usedCount} times`;
-        }
-
-        window.onload = () => { if(modal.style.display !== 'flex') autoSize(textIn); };
+        window.onload = () => { 
+            if(localStorage.getItem('basta_terms_v2') === 'true') autoSize(textIn); 
+            else render(); 
+        };
     </script>
 </body>
 </html>
