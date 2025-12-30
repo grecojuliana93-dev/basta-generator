@@ -25,7 +25,7 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', -apple-system, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
             display: flex;
@@ -33,14 +33,16 @@
             align-items: center;
             padding: 20px;
             margin: 0;
-            transition: background-color 0.3s, color 0.3s;
+            transition: background-color 0.3s;
         }
 
-        .header { width: 100%; max-width: 500px; display: flex; justify-content: space-between; margin-bottom: 20px; }
-        .title-group h1 { margin: 0; font-size: 28px; font-weight: 900; }
-        .title-group p { margin: 0; font-size: 11px; opacity: 0.6; text-transform: uppercase; }
+        .header { width: 100%; max-width: 500px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .title-group h1 { margin: 0; font-size: 24px; font-weight: 800; }
+        .title-group p { margin: 0; font-size: 10px; opacity: 0.6; text-transform: uppercase; letter-spacing: 1px; }
         
-        .theme-toggle { background: none; border: none; font-size: 22px; cursor: pointer; }
+        .controls { display: flex; gap: 10px; }
+        .icon-btn { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; font-size: 18px; cursor: pointer; padding: 8px; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+        .icon-btn:hover { background: var(--bg-color); }
 
         .card {
             background: var(--card-bg);
@@ -70,7 +72,7 @@
 
         textarea {
             width: 100%;
-            min-height: 120px;
+            min-height: 100px;
             background: var(--bg-color);
             border: 1px solid var(--border-color);
             color: var(--text-color);
@@ -83,29 +85,15 @@
             box-sizing: border-box;
         }
 
-        .footer-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+        .footer-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .filename-input {
             padding: 12px; border-radius: 10px; border: 1px solid var(--border-color);
             background: var(--bg-color); color: var(--text-color); font-size: 13px;
         }
         .download-btn {
             background: var(--btn-bg); color: var(--btn-text); border: none; border-radius: 10px;
-            font-weight: bold; cursor: pointer; font-size: 13px; transition: 0.2s;
+            font-weight: bold; cursor: pointer; font-size: 13px;
         }
-
-        .guide-box {
-            width: 100%;
-            max-width: 500px;
-            background: var(--card-bg);
-            padding: 20px;
-            border-radius: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.03);
-            font-size: 13px;
-            line-height: 1.5;
-        }
-        .guide-box h2 { font-size: 16px; margin-top: 0; color: var(--accent-red); }
-        .guide-box ul { padding-left: 18px; margin-bottom: 0; }
-        .guide-box li { margin-bottom: 8px; }
     </style>
 </head>
 <body>
@@ -115,7 +103,10 @@
             <h1>BASTA GENERATOR</h1>
             <p>Created by Miko Mempin</p>
         </div>
-        <button class="theme-toggle" onclick="toggleTheme()" id="themeIcon">☀️</button>
+        <div class="controls">
+            <button class="icon-btn" onclick="cycleFont()" title="Change Font">🔤</button>
+            <button class="icon-btn" onclick="toggleTheme()" id="themeIcon" title="Toggle Theme">☀️</button>
+        </div>
     </div>
 
     <div class="card">
@@ -124,10 +115,8 @@
         </div>
 
         <label>Enter Message</label>
-        <textarea id="memeInput" oninput="autoGrow(this)">Made
-with 
-love by 
-Miko Mempin 🫶</textarea>
+        <textarea id="memeInput" oninput="autoGrow(this)">Type your
+message here... 🫶</textarea>
 
         <label>File Name</label>
         <div class="footer-actions">
@@ -136,33 +125,40 @@ Miko Mempin 🫶</textarea>
         </div>
     </div>
 
-    <div class="guide-box">
-        <h2>How to Use</h2>
-        <ul>
-            <li><strong>Type Exactly:</strong> Use <strong>Enter</strong> for new lines.</li>
-            <li><strong>Zero Cut-Off:</strong> Canvas expands to fit your longest word.</li>
-            <li><strong>Memory:</strong> Dark mode preference is saved automatically!</li>
-        </ul>
-    </div>
-
     <script>
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         const input = document.getElementById('memeInput');
-        const themeIcon = document.getElementById('themeIcon');
+        
+        // Font List
+        const fonts = [
+            { name: "Default", family: "Inter, -apple-system, Arial, sans-serif" },
+            { name: "Modern Mono", family: "'Courier New', Courier, monospace" },
+            { name: "Classic Serif", family: "Georgia, 'Times New Roman', serif" },
+            { name: "Impactful", family: "Impact, Charcoal, sans-serif" },
+            { name: "Handwritten", family: "'Comic Sans MS', cursive, sans-serif" },
+            { name: "Bold Minimal", family: "'Helvetica Neue', Helvetica, Arial, sans-serif" }
+        ];
 
-        // Check for saved theme on load
+        let currentFontIndex = parseInt(localStorage.getItem('fontIndex')) || 0;
+
+        // Theme initialization
         const savedTheme = localStorage.getItem('theme') || 'light';
         document.body.setAttribute('data-theme', savedTheme);
-        themeIcon.innerText = savedTheme === 'light' ? '☀️' : '🌙';
+        document.getElementById('themeIcon').innerText = savedTheme === 'light' ? '☀️' : '🌙';
 
         function toggleTheme() {
-            const currentTheme = document.body.getAttribute('data-theme');
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            
-            document.body.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            themeIcon.innerText = newTheme === 'light' ? '☀️' : '🌙';
+            const current = document.body.getAttribute('data-theme');
+            const next = current === 'light' ? 'dark' : 'light';
+            document.body.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+            document.getElementById('themeIcon').innerText = next === 'light' ? '☀️' : '🌙';
+        }
+
+        function cycleFont() {
+            currentFontIndex = (currentFontIndex + 1) % fonts.length;
+            localStorage.setItem('fontIndex', currentFontIndex);
+            draw();
         }
 
         function autoGrow(el) {
@@ -172,12 +168,14 @@ Miko Mempin 🫶</textarea>
         }
 
         function draw() {
-            const rawText = input.value;
-            const lines = rawText.split('\n');
-            const fontSize = 120; // High res size
-            const lineHeight = fontSize * 1.1;
+            const lines = input.value.split('\n');
+            const fontSize = 100; 
+            const lineHeight = fontSize * 1.2;
+            const fontObj = fonts[currentFontIndex];
 
-            ctx.font = `900 ${fontSize}px Arial, sans-serif`;
+            // Set weight based on font choice (Default/Impact/Bold Minimal use bolder weights)
+            const weight = (currentFontIndex === 3 || currentFontIndex === 5) ? "900" : "normal";
+            ctx.font = `${weight} ${fontSize}px ${fontObj.family}`;
             
             let maxWidth = 0;
             lines.forEach(line => {
@@ -185,19 +183,21 @@ Miko Mempin 🫶</textarea>
                 if (w > maxWidth) maxWidth = w;
             });
 
-            canvas.width = maxWidth + 40; 
-            canvas.height = (lines.length * lineHeight) + 20;
+            // Calculate Canvas Size
+            canvas.width = maxWidth + 80; 
+            canvas.height = (lines.length * lineHeight) + 60;
 
+            // Draw White Background
             ctx.fillStyle = "white"; 
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            ctx.font = `900 ${fontSize}px Arial, sans-serif`;
+            // Text Styles
+            ctx.font = `${weight} ${fontSize}px ${fontObj.family}`;
             ctx.fillStyle = "black";
-            ctx.textAlign = "left";
             ctx.textBaseline = "top";
 
             lines.forEach((line, i) => {
-                ctx.fillText(line, 20, (i * lineHeight) + 10);
+                ctx.fillText(line, 40, (i * lineHeight) + 30);
             });
         }
 
@@ -209,10 +209,7 @@ Miko Mempin 🫶</textarea>
             link.click();
         }
 
-        // Initialize
-        window.onload = () => {
-            autoGrow(input);
-        };
+        window.onload = () => autoGrow(input);
     </script>
 </body>
 </html>
