@@ -36,6 +36,7 @@
             transition: background 0.3s ease;
         }
 
+        /* MODAL */
         #termsModal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--overlay-bg); display: flex; align-items: center;
@@ -48,31 +49,33 @@
             text-align: center; color: var(--text-color);
         }
 
+        /* HEADER */
         .header { width: 100%; max-width: 500px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .controls { display: flex; gap: 10px; align-items: center; }
         .font-picker { padding: 8px; border-radius: 10px; background: var(--card-bg); color: var(--text-color); border: 1px solid var(--border-color); font-size: 12px; }
         .icon-btn { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--text-color); padding: 5px; }
 
+        /* MAIN CARD */
         .card {
             background: var(--card-bg); width: 100%; max-width: 500px;
             border-radius: 30px; padding: 25px; box-sizing: border-box;
             border: 1px solid var(--border-color); margin-bottom: 20px;
         }
 
-        /* CONTAINER FOR THE ADJUSTING PAD */
+        /* THE GROWING WRAPPER */
         .canvas-wrap {
             width: 100%; 
-            background: transparent; /* Changed to transparent so only the pad shows */
-            border-radius: 20px;
+            background: transparent; 
             margin-bottom: 20px; 
             display: flex; 
-            justify-content: flex-start;
+            justify-content: flex-start; /* Ensures it grows from the left */
             overflow-x: auto;
         }
 
         canvas {
             display: block;
-            border-radius: 4px; /* Slight rounding for the white pad */
+            background: white; /* This is the pad that grows/shrinks */
+            border-radius: 8px;
         }
 
         textarea {
@@ -98,7 +101,7 @@
             <h2 style="margin-top:0">Guidelines</h2>
             <ul style="text-align: left; font-size: 13px; opacity: 0.8; margin-bottom: 20px;">
                 <li>Usage: Personal use only.</li>
-                <li>Dynamic: The white pad adjusts to text size.</li>
+                <li>Made with Love by Miko Mempin 🫶</li>
             </ul>
             <button style="width:100%; padding:15px; border-radius:15px; border:none; background:var(--btn-bg); color:var(--btn-text); font-weight:bold; cursor:pointer" onclick="closeTerms()">I AGREE</button>
         </div>
@@ -135,7 +138,7 @@ Miko Mempin 🫶</textarea>
 
     <div class="info-section">
         <h3>How to Use</h3>
-        <p>Type your text and the white background will shrink or grow to fit it perfectly.</p>
+        <p>1. Type text (the white pad will grow or shrink to fit).<br>2. Use 🔄 to reset count and show terms.</p>
     </div>
 
     <script>
@@ -183,24 +186,24 @@ Miko Mempin 🫶</textarea>
             const size = 100;
             const font = fontSel.value;
             
-            // Initial font setup to measure width correctly
+            // Temporary set font to measure
             ctx.font = `300 ${size}px ${font}`;
             
             let maxW = 0;
             lines.forEach(l => {
-                const metrics = ctx.measureText(l);
-                if(metrics.width > maxW) maxW = metrics.width;
+                const w = ctx.measureText(l).width;
+                if(w > maxW) maxW = w;
             });
 
-            // TRUE ADJUSTMENT: Pad width is exactly max text width + small left/right padding
-            canvas.width = maxW + 60; 
-            canvas.height = (lines.length * (size * 1.2)) + 40;
+            // THE KEY FIX: Canvas dimensions are updated to hug the text
+            canvas.width = maxW + 80; 
+            canvas.height = (lines.length * (size * 1.2)) + 60;
 
-            // DRAWING THE WHITE PAD
+            // Clear and draw background (The Pad)
             ctx.fillStyle = "white";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            // DRAWING THE TEXT
+            // Text Settings
             ctx.filter = 'blur(0.4px) contrast(1.1)';
             ctx.fillStyle = "black";
             ctx.font = `300 ${size}px ${font}`;
@@ -208,7 +211,7 @@ Miko Mempin 🫶</textarea>
             ctx.textAlign = "left";
 
             lines.forEach((l, i) => {
-                ctx.fillText(l, 30, (i * (size * 1.2)) + 20);
+                ctx.fillText(l, 40, (i * (size * 1.2)) + 30);
             });
         }
 
