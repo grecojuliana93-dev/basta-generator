@@ -7,26 +7,25 @@
     <style>
         :root {
             --bg-color: #000000;
-            --card-bg: #1a1a1a;
+            --card-bg: #161616;
             --text-color: #ffffff;
-            --border-color: #333333;
+            --border-color: #2c2c2c;
             --btn-bg: #ffffff;
             --btn-text: #000000;
-            --overlay-bg: rgba(0,0,0,0.9);
+            --overlay-bg: rgba(0,0,0,0.95);
         }
 
-        /* Light Mode Styles */
-        body.light-theme {
-            --bg-color: #f5f5f7;
+        body.light-mode {
+            --bg-color: #f2f2f7;
             --card-bg: #ffffff;
-            --text-color: #1d1d1f;
-            --border-color: #e0e0e0;
+            --text-color: #1c1c1e;
+            --border-color: #d1d1d6;
             --btn-bg: #000000;
             --btn-text: #ffffff;
         }
 
         body {
-            font-family: sans-serif; /* True system default */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
             display: flex;
@@ -34,177 +33,211 @@
             align-items: center;
             padding: 20px;
             margin: 0;
-            transition: all 0.2s ease;
+            transition: background 0.3s ease;
         }
 
+        /* MODAL */
         #termsModal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--overlay-bg); display: flex; align-items: center;
-            justify-content: center; z-index: 9999; backdrop-filter: blur(10px);
+            justify-content: center; z-index: 10000; backdrop-filter: blur(15px);
         }
-        .modal-content {
-            background: #111; width: 90%; max-width: 400px;
-            padding: 30px; border-radius: 24px; border: 1px solid #333;
-            text-align: center; color: white;
+        .modal-box {
+            background: var(--card-bg); width: 85%; max-width: 350px;
+            padding: 30px; border-radius: 30px; border: 1px solid var(--border-color);
+            text-align: center; color: var(--text-color);
         }
 
-        .header { width: 100%; max-width: 500px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-        .title-group h1 { margin: 0; font-size: 26px; font-weight: 900; }
-        .controls { display: flex; gap: 12px; align-items: center; }
-        
-        .font-select { padding: 8px; border-radius: 8px; background: #222; color: #fff; border: 1px solid var(--border-color); font-size: 12px; }
-        .icon-btn { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-color); }
+        /* HEADER */
+        .header { width: 100%; max-width: 500px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .controls { display: flex; gap: 10px; align-items: center; }
+        .font-picker { padding: 8px; border-radius: 10px; background: var(--card-bg); color: var(--text-color); border: 1px solid var(--border-color); font-size: 12px; cursor: pointer; }
+        .icon-btn { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--text-color); padding: 5px; }
 
+        /* MAIN CARD */
         .card {
             background: var(--card-bg); width: 100%; max-width: 500px;
-            border-radius: 28px; padding: 24px; box-sizing: border-box;
+            border-radius: 30px; padding: 25px; box-sizing: border-box;
+            border: 1px solid var(--border-color); margin-bottom: 20px;
         }
 
-        .preview-container {
-            width: 100%; background: #ffffff; border-radius: 18px;
+        .canvas-wrap {
+            width: 100%; background: #ffffff; border-radius: 20px;
             overflow: hidden; margin-bottom: 20px; display: flex; justify-content: center;
         }
-
-        canvas { max-width: 100%; height: auto; display: block; }
 
         textarea {
             width: 100%; min-height: 120px; background: transparent;
             border: 1px solid var(--border-color); color: var(--text-color);
             padding: 15px; border-radius: 15px; margin-bottom: 20px;
-            font-family: inherit; font-size: 18px; box-sizing: border-box;
+            font-size: 18px; font-weight: 300; resize: none; box-sizing: border-box;
         }
 
-        .footer-actions { display: grid; grid-template-columns: 1fr 120px; gap: 10px; }
-        .filename-input { padding: 12px; border-radius: 12px; border: 1px solid var(--border-color); background: transparent; color: var(--text-color); }
-        .download-btn { background: var(--btn-bg); color: var(--btn-text); border: none; border-radius: 12px; font-weight: 800; cursor: pointer; }
-        
-        .share-btn { 
-            grid-column: span 2; background: #333; color: #fff; 
-            border: none; padding: 12px; border-radius: 12px; 
-            font-size: 12px; cursor: pointer; margin-top: 10px;
-        }
+        .actions { display: grid; grid-template-columns: 1fr 130px; gap: 10px; }
+        .dl-btn { background: var(--btn-bg); color: var(--btn-text); border: none; border-radius: 15px; font-weight: 700; cursor: pointer; font-size: 11px; }
+        .filename { padding: 12px; border-radius: 15px; border: 1px solid var(--border-color); background: transparent; color: var(--text-color); font-size: 13px; }
+
+        /* INFO SECTIONS */
+        .info-section { width: 100%; max-width: 500px; margin-top: 20px; color: var(--text-color); }
+        .info-section h3 { font-size: 18px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 15px; }
+        .info-section p, .info-section li { font-size: 14px; opacity: 0.7; line-height: 1.6; }
+        .example-box { background: white; color: black; padding: 15px; border-radius: 15px; text-align: center; margin-top: 10px; font-size: 14px; }
     </style>
 </head>
-<body id="bodyTag">
+<body id="mainBody">
 
     <div id="termsModal">
-        <div class="modal-content">
-            <h2>Guidelines</h2>
-            <p>Please agree to continue.</p>
-            <button style="width:100%; padding:15px; border-radius:10px; font-weight:bold;" onclick="acceptTerms()">I AGREE</button>
+        <div class="modal-box">
+            <h2 style="margin-top:0">Guidelines</h2>
+            <ul style="text-align: left; font-size: 13px; opacity: 0.8; margin-bottom: 20px;">
+                <li>Usage: Personal use only.</li>
+                <li>Content: Avoid offensive or harmful text.</li>
+                <li>Rendering: Fonts are local and may vary by device.</li>
+                <li>Aesthetic: The blur is an intentional screenshot effect.</li>
+            </ul>
+            <button style="width:100%; padding:15px; border-radius:15px; border:none; background:var(--btn-bg); color:var(--btn-text); font-weight:bold; cursor:pointer" onclick="closeTerms()">I AGREE</button>
         </div>
     </div>
 
     <div class="header">
-        <div class="title-group">
-            <h1>BASTA GENERATOR</h1>
-            <div id="usedCount" style="font-size:10px; opacity:0.6;">Used: 0 times</div>
+        <div>
+            <h1 style="margin:0; font-size:24px; letter-spacing:-1px">BASTA GENERATOR</h1>
+            <div id="counterDisplay" style="font-size:10px; opacity:0.5">Used: 0 times</div>
         </div>
         <div class="controls">
-            <select id="fontPicker" class="font-select" onchange="draw()">
-                <option value="sans-serif">No Font (Default)</option>
+            <select id="fontSel" class="font-picker" onchange="render()">
+                <option value="system-ui">No Font (Normal)</option>
                 <option value="serif">Classic Serif</option>
                 <option value="monospace">Monospace</option>
-                <option value="Impact">Impact</option>
             </select>
-            <button class="icon-btn" onclick="resetApp()">🔄</button>
-            <button class="icon-btn" onclick="toggleTheme()" id="themeIcon">🌙</button>
+            <button class="icon-btn" onclick="hardReset()">🔄</button>
+            <button class="icon-btn" onclick="toggleDark()" id="themeIcon">🌙</button>
         </div>
     </div>
 
     <div class="card">
-        <div class="preview-container"><canvas id="canvas"></canvas></div>
-        <textarea id="memeInput" oninput="autoGrow(this)">Made 
-With Love 
-By Miko Mempin 🫶</textarea>
-        <div class="footer-actions">
-            <input type="text" id="filenameInput" class="filename-input" placeholder="filename...">
-            <button class="download-btn" onclick="download()">DOWNLOAD</button>
-            <button class="share-btn" onclick="shareMeme()">📤 SHARE / COPY</button>
+        <div class="canvas-wrap"><canvas id="memeCanvas"></canvas></div>
+        <label style="font-size:11px; opacity:0.5; display:block; margin-bottom:8px">Enter Message</label>
+        <textarea id="textIn" oninput="autoSize(this)">Made With 
+Love By 
+Miko Mempin 🫶</textarea>
+        <div class="actions">
+            <input type="text" id="fileIn" class="filename" placeholder="filename...">
+            <button class="dl-btn" onclick="doDownload()">DOWNLOAD PNG</button>
+        </div>
+        <button style="width:100%; margin-top:10px; padding:12px; border-radius:15px; background:#222; color:#fff; border:none; font-size:12px; cursor:pointer" onclick="doShare()">📤 SHARE / COPY IMAGE</button>
+    </div>
+
+    <div class="info-section">
+        <h3>How to Use</h3>
+        <ol style="padding-left: 20px;">
+            <li><strong>Type:</strong> Enter your message in the box.</li>
+            <li><strong>Customize:</strong> Use the 🔄 button to reset or use the font dropdown.</li>
+            <li><strong>Mode:</strong> Toggle 🌙 for dark or light aesthetic.</li>
+            <li><strong>Save:</strong> Click Download to save your blurry PNG.</li>
+        </ol>
+
+        <h3 style="margin-top:30px">Example Output</h3>
+        <p>Your creation will look like a high-quality screenshot:</p>
+        <div class="example-box">
+            Basta generator works<br>perfectly. 🫶
         </div>
     </div>
 
     <script>
-        const canvas = document.getElementById('canvas');
+        const canvas = document.getElementById('memeCanvas');
         const ctx = canvas.getContext('2d');
-        const input = document.getElementById('memeInput');
-        const fontPicker = document.getElementById('fontPicker');
-        const body = document.getElementById('bodyTag');
+        const textIn = document.getElementById('textIn');
+        const fontSel = document.getElementById('fontSel');
+        const body = document.getElementById('mainBody');
 
-        // Logic fixes
-        let count = parseInt(localStorage.getItem('b_count')) || 0;
-        document.getElementById('usedCount').innerText = `Used: ${count} times`;
-
-        function acceptTerms() {
+        // Restore acceptance memory
+        if (localStorage.getItem('basta_terms_accepted') === 'true') {
             document.getElementById('termsModal').style.display = 'none';
-            autoGrow(input);
         }
 
-        function toggleTheme() {
-            body.classList.toggle('light-theme');
-            const isLight = body.classList.contains('light-theme');
+        let usedCount = parseInt(localStorage.getItem('basta_uses')) || 0;
+        document.getElementById('counterDisplay').innerText = `Used: ${usedCount} times`;
+
+        function closeTerms() {
+            localStorage.setItem('basta_terms_accepted', 'true');
+            document.getElementById('termsModal').style.display = 'none';
+            autoSize(textIn);
+        }
+
+        function toggleDark() {
+            body.classList.toggle('light-mode');
+            const isLight = body.classList.contains('light-mode');
             document.getElementById('themeIcon').innerText = isLight ? '☀️' : '🌙';
         }
 
-        function resetApp() {
-            input.value = "Made \nWith Love \nBy Miko Mempin 🫶";
-            fontPicker.selectedIndex = 0;
-            autoGrow(input);
+        function hardReset() {
+            textIn.value = "Made With \nLove By \nMiko Mempin 🫶";
+            fontSel.selectedIndex = 0;
+            autoSize(textIn);
         }
 
-        function autoGrow(el) {
-            el.style.height = "auto";
-            el.style.height = el.scrollHeight + "px";
-            draw();
+        function autoSize(el) {
+            el.style.height = 'auto';
+            el.style.height = el.scrollHeight + 'px';
+            render();
         }
 
-        function draw() {
-            const lines = input.value.split('\n');
-            const fontSize = 100;
-            const selectedFont = fontPicker.value;
-            ctx.font = `bold ${fontSize}px ${selectedFont}`;
+        function render() {
+            const lines = textIn.value.split('\n');
+            const size = 100;
+            const font = fontSel.value;
             
-            let maxWidth = 0;
+            // Set weight to 300 for that "Normal/Thin" look
+            ctx.font = `300 ${size}px ${font}`;
+            
+            let maxW = 0;
             lines.forEach(l => {
                 const w = ctx.measureText(l).width;
-                if(w > maxWidth) maxWidth = w;
+                if(w > maxW) maxW = w;
             });
 
-            canvas.width = maxWidth + 80;
-            canvas.height = (lines.length * (fontSize * 1.1)) + 60;
-            
-            ctx.filter = 'blur(0.4px) contrast(1.1)';
+            canvas.width = maxW + 100;
+            canvas.height = (lines.length * (size * 1.2)) + 80;
+
             ctx.fillStyle = "white";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.filter = 'blur(0.4px) contrast(1.1)';
             ctx.fillStyle = "black";
-            ctx.font = `bold ${fontSize}px ${selectedFont}`;
+            ctx.font = `300 ${size}px ${font}`;
             ctx.textBaseline = "top";
-            lines.forEach((l, i) => ctx.fillText(l, 40, (i * (fontSize * 1.1)) + 30));
+            
+            lines.forEach((l, i) => {
+                ctx.fillText(l, 50, (i * (size * 1.2)) + 40);
+            });
         }
 
-        function download() {
+        function doDownload() {
             const link = document.createElement('a');
-            link.download = document.getElementById('filenameInput').value || 'basta';
+            link.download = document.getElementById('fileIn').value || 'basta';
             link.href = canvas.toDataURL();
             link.click();
-            updateCount();
+            addCount();
         }
 
-        function shareMeme() {
+        function doShare() {
             canvas.toBlob(blob => {
                 const item = new ClipboardItem({ "image/png": blob });
                 navigator.clipboard.write([item]).then(() => {
-                    alert("Copied!");
-                    updateCount();
+                    alert("Copied to clipboard!");
+                    addCount();
                 });
             });
         }
 
-        function updateCount() {
-            count++;
-            localStorage.setItem('b_count', count);
-            document.getElementById('usedCount').innerText = `Used: ${count} times`;
+        function addCount() {
+            usedCount++;
+            localStorage.setItem('basta_uses', usedCount);
+            document.getElementById('counterDisplay').innerText = `Used: ${usedCount} times`;
         }
+
+        window.onload = () => autoSize(textIn);
     </script>
 </body>
 </html>
