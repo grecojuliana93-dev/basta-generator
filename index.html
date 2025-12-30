@@ -9,15 +9,24 @@
             --bg-color: #000000;
             --card-bg: #1a1a1a;
             --text-color: #ffffff;
-            --accent-red: #ff3b30;
             --border-color: #333333;
             --btn-bg: #ffffff;
             --btn-text: #000000;
-            --overlay-bg: rgba(0,0,0,0.85);
+            --overlay-bg: rgba(0,0,0,0.9);
+        }
+
+        /* Light Mode Styles */
+        body.light-theme {
+            --bg-color: #f5f5f7;
+            --card-bg: #ffffff;
+            --text-color: #1d1d1f;
+            --border-color: #e0e0e0;
+            --btn-bg: #000000;
+            --btn-text: #ffffff;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: sans-serif; /* True system default */
             background-color: var(--bg-color);
             color: var(--text-color);
             display: flex;
@@ -25,10 +34,9 @@
             align-items: center;
             padding: 20px;
             margin: 0;
-            transition: background-color 0.3s;
+            transition: all 0.2s ease;
         }
 
-        /* MODAL */
         #termsModal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--overlay-bg); display: flex; align-items: center;
@@ -36,27 +44,20 @@
         }
         .modal-content {
             background: #111; width: 90%; max-width: 400px;
-            padding: 30px; border-radius: 24px; border: 1px solid var(--border-color);
+            padding: 30px; border-radius: 24px; border: 1px solid #333;
             text-align: center; color: white;
         }
-        .accept-btn {
-            background: white; color: black; border: none; padding: 14px 30px;
-            border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 20px; width: 100%;
-        }
 
-        /* HEADER */
         .header { width: 100%; max-width: 500px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-        .title-group h1 { margin: 0; font-size: 26px; font-weight: 900; letter-spacing: -0.5px; }
-        .title-group p { margin: 0; font-size: 11px; opacity: 0.5; text-transform: uppercase; letter-spacing: 1.5px; }
-        
+        .title-group h1 { margin: 0; font-size: 26px; font-weight: 900; }
         .controls { display: flex; gap: 12px; align-items: center; }
-        .font-select { padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border-color); background: #111; color: #fff; font-size: 12px; }
-        .icon-btn { background: none; border: none; font-size: 20px; cursor: pointer; color: white; padding: 4px; }
+        
+        .font-select { padding: 8px; border-radius: 8px; background: #222; color: #fff; border: 1px solid var(--border-color); font-size: 12px; }
+        .icon-btn { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-color); }
 
-        /* CARD */
         .card {
             background: var(--card-bg); width: 100%; max-width: 500px;
-            border-radius: 28px; padding: 24px; box-sizing: border-box; margin-bottom: 30px;
+            border-radius: 28px; padding: 24px; box-sizing: border-box;
         }
 
         .preview-container {
@@ -64,93 +65,63 @@
             overflow: hidden; margin-bottom: 20px; display: flex; justify-content: center;
         }
 
-        canvas { max-width: 100%; height: auto; display: block; background: white; }
-        label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 10px; opacity: 0.6; }
+        canvas { max-width: 100%; height: auto; display: block; }
 
         textarea {
             width: 100%; min-height: 120px; background: transparent;
             border: 1px solid var(--border-color); color: var(--text-color);
             padding: 15px; border-radius: 15px; margin-bottom: 20px;
-            resize: none; font-family: inherit; font-size: 18px; box-sizing: border-box;
+            font-family: inherit; font-size: 18px; box-sizing: border-box;
         }
 
         .footer-actions { display: grid; grid-template-columns: 1fr 120px; gap: 10px; }
-        .filename-input { padding: 12px; border-radius: 12px; border: 1px solid var(--border-color); background: transparent; color: #fff; font-size: 14px; }
-        .download-btn { background: #fff; color: #000; border: none; border-radius: 12px; font-weight: 800; cursor: pointer; font-size: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.2; }
+        .filename-input { padding: 12px; border-radius: 12px; border: 1px solid var(--border-color); background: transparent; color: var(--text-color); }
+        .download-btn { background: var(--btn-bg); color: var(--btn-text); border: none; border-radius: 12px; font-weight: 800; cursor: pointer; }
         
         .share-btn { 
-            grid-column: span 2; background: #222; color: #fff; 
-            border: 1px solid var(--border-color); padding: 12px; border-radius: 12px; 
-            font-size: 12px; cursor: pointer; font-weight: 600; margin-top: 5px;
+            grid-column: span 2; background: #333; color: #fff; 
+            border: none; padding: 12px; border-radius: 12px; 
+            font-size: 12px; cursor: pointer; margin-top: 10px;
         }
-
-        /* INFO SECTION */
-        .info-section { width: 100%; max-width: 500px; padding: 0 10px; box-sizing: border-box; }
-        .info-section h3 { font-size: 18px; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px; }
-        .info-section p, .info-section li { font-size: 14px; opacity: 0.7; line-height: 1.6; margin-bottom: 10px; }
-        
-        .stat-badge { font-size: 10px; background: #333; padding: 2px 8px; border-radius: 20px; margin-top: 5px; display: inline-block; }
     </style>
 </head>
-<body>
+<body id="bodyTag">
 
     <div id="termsModal">
         <div class="modal-content">
             <h2>Guidelines</h2>
-            <p style="font-size: 14px; opacity: 0.8;">Please agree to the terms to use the BASTA GENERATOR.</p>
-            <ul style="text-align: left; font-size: 13px; opacity: 0.7;">
-                <li>Personal use only.</li>
-                <li>No offensive content.</li>
-                <li>The blur effect is intentional.</li>
-            </ul>
-            <button class="accept-btn" onclick="acceptTerms()">I AGREE</button>
+            <p>Please agree to continue.</p>
+            <button style="width:100%; padding:15px; border-radius:10px; font-weight:bold;" onclick="acceptTerms()">I AGREE</button>
         </div>
     </div>
 
     <div class="header">
         <div class="title-group">
             <h1>BASTA GENERATOR</h1>
-            <p>Created by Miko Mempin</p>
-            <div id="usedCount" class="stat-badge">Used: 0 times</div>
+            <div id="usedCount" style="font-size:10px; opacity:0.6;">Used: 0 times</div>
         </div>
         <div class="controls">
             <select id="fontPicker" class="font-select" onchange="draw()">
-                <option value="sans-serif">Default Sans</option>
+                <option value="sans-serif">No Font (Default)</option>
                 <option value="serif">Classic Serif</option>
-                <option value="monospace">Mono Space</option>
+                <option value="monospace">Monospace</option>
                 <option value="Impact">Impact</option>
             </select>
-            <button class="icon-btn" onclick="resetApp()" title="Reset Site">🔄</button>
+            <button class="icon-btn" onclick="resetApp()">🔄</button>
             <button class="icon-btn" onclick="toggleTheme()" id="themeIcon">🌙</button>
         </div>
     </div>
 
     <div class="card">
-        <div class="preview-container">
-            <canvas id="canvas"></canvas>
-        </div>
-        <label>Enter Message</label>
+        <div class="preview-container"><canvas id="canvas"></canvas></div>
         <textarea id="memeInput" oninput="autoGrow(this)">Made 
 With Love 
 By Miko Mempin 🫶</textarea>
         <div class="footer-actions">
-            <input type="text" id="filenameInput" class="filename-input" placeholder="basta-meme">
-            <button class="download-btn" onclick="download()">
-                <span>⬇️</span>
-                DOWNLOAD PNG
-            </button>
-            <button class="share-btn" onclick="shareMeme()">📤 SHARE / COPY IMAGE</button>
+            <input type="text" id="filenameInput" class="filename-input" placeholder="filename...">
+            <button class="download-btn" onclick="download()">DOWNLOAD</button>
+            <button class="share-btn" onclick="shareMeme()">📤 SHARE / COPY</button>
         </div>
-    </div>
-
-    <div class="info-section">
-        <h3>How to Use</h3>
-        <ol style="padding-left: 20px;">
-            <li><strong>Type:</strong> Enter text. Image resizes automatically.</li>
-            <li><strong>Customize:</strong> Use the dropdown to change fonts.</li>
-            <li><strong>Mode:</strong> Switch Light/Dark mode.</li>
-            <li><strong>Save:</strong> Download your blurry PNG!</li>
-        </ol>
     </div>
 
     <script>
@@ -158,90 +129,82 @@ By Miko Mempin 🫶</textarea>
         const ctx = canvas.getContext('2d');
         const input = document.getElementById('memeInput');
         const fontPicker = document.getElementById('fontPicker');
-        const modal = document.getElementById('termsModal');
-        const countDisplay = document.getElementById('usedCount');
+        const body = document.getElementById('bodyTag');
 
-        // TRACKING USED COUNT
-        let count = parseInt(localStorage.getItem('basta_count')) || 0;
-        updateCountDisplay();
+        // Logic fixes
+        let count = parseInt(localStorage.getItem('b_count')) || 0;
+        document.getElementById('usedCount').innerText = `Used: ${count} times`;
 
-        function updateCountDisplay() {
-            countDisplay.innerText = `Used: ${count} times`;
+        function acceptTerms() {
+            document.getElementById('termsModal').style.display = 'none';
+            autoGrow(input);
         }
-
-        function incrementCount() {
-            count++;
-            localStorage.setItem('basta_count', count);
-            updateCountDisplay();
-        }
-
-        // RESET FUNCTION
-        function resetApp() {
-            if(confirm("Reset all settings and text to normal?")) {
-                input.value = "Made \nWith Love \nBy Miko Mempin 🫶";
-                fontPicker.selectedIndex = 0;
-                autoGrow(input);
-            }
-        }
-
-        if (localStorage.getItem('basta_terms') === 'true') { modal.style.display = 'none'; }
-        function acceptTerms() { localStorage.setItem('basta_terms', 'true'); modal.style.display = 'none'; }
 
         function toggleTheme() {
-            const current = document.body.getAttribute('data-theme');
-            const next = current === 'light' ? 'dark' : 'light';
-            document.body.setAttribute('data-theme', next);
-            document.getElementById('themeIcon').innerText = next === 'light' ? '🌙' : '☀️';
+            body.classList.toggle('light-theme');
+            const isLight = body.classList.contains('light-theme');
+            document.getElementById('themeIcon').innerText = isLight ? '☀️' : '🌙';
         }
 
-        function autoGrow(el) { el.style.height = "auto"; el.style.height = (el.scrollHeight) + "px"; draw(); }
+        function resetApp() {
+            input.value = "Made \nWith Love \nBy Miko Mempin 🫶";
+            fontPicker.selectedIndex = 0;
+            autoGrow(input);
+        }
+
+        function autoGrow(el) {
+            el.style.height = "auto";
+            el.style.height = el.scrollHeight + "px";
+            draw();
+        }
 
         function draw() {
             const lines = input.value.split('\n');
-            const fontSize = 100; 
-            const lineHeight = fontSize * 1.1;
+            const fontSize = 100;
             const selectedFont = fontPicker.value;
             ctx.font = `bold ${fontSize}px ${selectedFont}`;
+            
             let maxWidth = 0;
-            lines.forEach(line => {
-                const w = ctx.measureText(line).width;
-                if (w > maxWidth) maxWidth = w;
+            lines.forEach(l => {
+                const w = ctx.measureText(l).width;
+                if(w > maxWidth) maxWidth = w;
             });
-            canvas.width = maxWidth + 80; 
-            canvas.height = (lines.length * lineHeight) + 60;
+
+            canvas.width = maxWidth + 80;
+            canvas.height = (lines.length * (fontSize * 1.1)) + 60;
+            
             ctx.filter = 'blur(0.4px) contrast(1.1)';
-            ctx.fillStyle = "white"; 
+            ctx.fillStyle = "white";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.font = `bold ${fontSize}px ${selectedFont}`;
             ctx.fillStyle = "black";
+            ctx.font = `bold ${fontSize}px ${selectedFont}`;
             ctx.textBaseline = "top";
-            lines.forEach((line, i) => { ctx.fillText(line, 40, (i * lineHeight) + 30); });
-            ctx.filter = 'none';
+            lines.forEach((l, i) => ctx.fillText(l, 40, (i * (fontSize * 1.1)) + 30));
         }
 
         function download() {
-            incrementCount();
             const link = document.createElement('a');
-            link.download = (document.getElementById('filenameInput').value || 'basta-meme') + '.png';
-            link.href = canvas.toDataURL('image/png');
+            link.download = document.getElementById('filenameInput').value || 'basta';
+            link.href = canvas.toDataURL();
             link.click();
+            updateCount();
         }
 
-        async function shareMeme() {
-            incrementCount();
-            canvas.toBlob(async (blob) => {
-                const file = new File([blob], 'basta.png', { type: 'image/png' });
-                if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                    await navigator.share({ files: [file] });
-                } else {
-                    const item = new ClipboardItem({ "image/png": blob });
-                    await navigator.clipboard.write([item]);
-                    alert("Copied to clipboard!");
-                }
+        function shareMeme() {
+            canvas.toBlob(blob => {
+                const item = new ClipboardItem({ "image/png": blob });
+                navigator.clipboard.write([item]).then(() => {
+                    alert("Copied!");
+                    updateCount();
+                });
             });
         }
 
-        window.onload = () => autoGrow(input);
+        function updateCount() {
+            count++;
+            localStorage.setItem('b_count', count);
+            document.getElementById('usedCount').innerText = `Used: ${count} times`;
+        }
     </script>
 </body>
-    </html>
+</html>
