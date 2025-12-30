@@ -6,23 +6,14 @@
     <title>BASTA GENERATOR</title>
     <style>
         :root {
-            --bg-color: #f5f5f7;
-            --card-bg: #ffffff;
-            --text-color: #1d1d1f;
-            --accent-red: #e91e63;
-            --border-color: #e0e0e0;
-            --btn-bg: #000000;
-            --btn-text: #ffffff;
-            --overlay-bg: rgba(0,0,0,0.7);
-        }
-
-        [data-theme="dark"] {
-            --bg-color: #121212;
-            --card-bg: #1e1e1e;
-            --text-color: #f5f5f7;
+            --bg-color: #000000;
+            --card-bg: #1a1a1a;
+            --text-color: #ffffff;
+            --accent-red: #ff3b30;
             --border-color: #333333;
             --btn-bg: #ffffff;
             --btn-text: #000000;
+            --overlay-bg: rgba(0,0,0,0.85);
         }
 
         body {
@@ -41,63 +32,64 @@
         #termsModal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--overlay-bg); display: flex; align-items: center;
-            justify-content: center; z-index: 9999; backdrop-filter: blur(8px);
+            justify-content: center; z-index: 9999; backdrop-filter: blur(10px);
         }
         .modal-content {
-            background: var(--card-bg); width: 90%; max-width: 400px;
-            padding: 30px; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-            text-align: center; color: var(--text-color);
+            background: #111; width: 90%; max-width: 400px;
+            padding: 30px; border-radius: 24px; border: 1px solid var(--border-color);
+            text-align: center; color: white;
         }
         .accept-btn {
-            background: var(--accent-red); color: white; border: none; padding: 12px 30px;
-            border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 20px; width: 100%;
+            background: white; color: black; border: none; padding: 14px 30px;
+            border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 20px; width: 100%;
         }
 
-        /* MAIN UI */
-        .header { width: 100%; max-width: 500px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .title-group h1 { margin: 0; font-size: 24px; font-weight: 900; }
-        .title-group p { margin: 0; font-size: 10px; opacity: 0.6; text-transform: uppercase; letter-spacing: 1px; }
+        /* HEADER */
+        .header { width: 100%; max-width: 500px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .title-group h1 { margin: 0; font-size: 26px; font-weight: 900; letter-spacing: -0.5px; }
+        .title-group p { margin: 0; font-size: 11px; opacity: 0.5; text-transform: uppercase; letter-spacing: 1.5px; }
         
-        .controls { display: flex; gap: 8px; align-items: center; }
-        .font-select { padding: 6px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-color); font-size: 12px; }
-        .theme-toggle { background: none; border: none; font-size: 22px; cursor: pointer; }
+        .controls { display: flex; gap: 12px; align-items: center; }
+        .font-select { padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border-color); background: #111; color: #fff; font-size: 12px; }
+        .icon-btn { background: none; border: none; font-size: 20px; cursor: pointer; color: white; padding: 4px; }
 
+        /* CARD */
         .card {
             background: var(--card-bg); width: 100%; max-width: 500px;
-            border-radius: 20px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            box-sizing: border-box; margin-bottom: 20px;
+            border-radius: 28px; padding: 24px; box-sizing: border-box; margin-bottom: 30px;
         }
 
         .preview-container {
-            width: 100%; background: #e5e5e5; border-radius: 12px;
-            overflow: hidden; border: 1px solid var(--border-color);
-            margin-bottom: 15px; display: flex; justify-content: center;
+            width: 100%; background: #ffffff; border-radius: 18px;
+            overflow: hidden; margin-bottom: 20px; display: flex; justify-content: center;
         }
 
         canvas { max-width: 100%; height: auto; display: block; background: white; }
-        label { display: block; font-size: 11px; font-weight: 800; margin-bottom: 8px; opacity: 0.7; }
+        label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 10px; opacity: 0.6; }
 
         textarea {
-            width: 100%; min-height: 100px; background: var(--bg-color);
+            width: 100%; min-height: 120px; background: transparent;
             border: 1px solid var(--border-color); color: var(--text-color);
-            padding: 12px; border-radius: 10px; margin-bottom: 15px;
-            resize: none; font-family: inherit; font-size: 16px; box-sizing: border-box;
+            padding: 15px; border-radius: 15px; margin-bottom: 20px;
+            resize: none; font-family: inherit; font-size: 18px; box-sizing: border-box;
         }
 
-        .footer-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;}
-        .filename-input { padding: 12px; border-radius: 10px; border: 1px solid var(--border-color); background: var(--bg-color); color: var(--text-color); font-size: 13px; }
-        .download-btn { background: var(--btn-bg); color: var(--btn-text); border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 13px; }
+        .footer-actions { display: grid; grid-template-columns: 1fr 120px; gap: 10px; }
+        .filename-input { padding: 12px; border-radius: 12px; border: 1px solid var(--border-color); background: transparent; color: #fff; font-size: 14px; }
+        .download-btn { background: #fff; color: #000; border: none; border-radius: 12px; font-weight: 800; cursor: pointer; font-size: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.2; }
         
         .share-btn { 
-            grid-column: span 2; background: transparent; color: var(--text-color); 
-            border: 1px solid var(--border-color); padding: 10px; border-radius: 10px; 
-            font-size: 12px; cursor: pointer; font-weight: 600;
+            grid-column: span 2; background: #222; color: #fff; 
+            border: 1px solid var(--border-color); padding: 12px; border-radius: 12px; 
+            font-size: 12px; cursor: pointer; font-weight: 600; margin-top: 5px;
         }
 
         /* INFO SECTION */
-        .info-section { width: 100%; max-width: 500px; padding: 20px; box-sizing: border-box; }
-        .info-section h3 { font-size: 16px; margin-bottom: 10px; border-bottom: 2px solid var(--border-color); padding-bottom: 5px; }
-        .info-section p, .info-section li { font-size: 13px; opacity: 0.8; line-height: 1.5; }
+        .info-section { width: 100%; max-width: 500px; padding: 0 10px; box-sizing: border-box; }
+        .info-section h3 { font-size: 18px; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        .info-section p, .info-section li { font-size: 14px; opacity: 0.7; line-height: 1.6; margin-bottom: 10px; }
+        
+        .stat-badge { font-size: 10px; background: #333; padding: 2px 8px; border-radius: 20px; margin-top: 5px; display: inline-block; }
     </style>
 </head>
 <body>
@@ -105,11 +97,11 @@
     <div id="termsModal">
         <div class="modal-content">
             <h2>Guidelines</h2>
-            <p style="font-size: 14px;">Welcome to <strong>BASTA GENERATOR</strong>.</p>
-            <ul style="text-align: left; font-size: 13px;">
-                <li><strong>Usage:</strong> Personal use only.</li>
-                <li><strong>Content:</strong> No harmful or offensive text.</li>
-                <li><strong>Aesthetic:</strong> The blur effect is intentional.</li>
+            <p style="font-size: 14px; opacity: 0.8;">Please agree to the terms to use the BASTA GENERATOR.</p>
+            <ul style="text-align: left; font-size: 13px; opacity: 0.7;">
+                <li>Personal use only.</li>
+                <li>No offensive content.</li>
+                <li>The blur effect is intentional.</li>
             </ul>
             <button class="accept-btn" onclick="acceptTerms()">I AGREE</button>
         </div>
@@ -119,16 +111,17 @@
         <div class="title-group">
             <h1>BASTA GENERATOR</h1>
             <p>Created by Miko Mempin</p>
+            <div id="usedCount" class="stat-badge">Used: 0 times</div>
         </div>
         <div class="controls">
             <select id="fontPicker" class="font-select" onchange="draw()">
                 <option value="sans-serif">Default Sans</option>
                 <option value="serif">Classic Serif</option>
                 <option value="monospace">Mono Space</option>
-                <option value="cursive">Cursive</option>
                 <option value="Impact">Impact</option>
             </select>
-            <button class="theme-toggle" onclick="toggleTheme()" id="themeIcon">☀️</button>
+            <button class="icon-btn" onclick="resetApp()" title="Reset Site">🔄</button>
+            <button class="icon-btn" onclick="toggleTheme()" id="themeIcon">🌙</button>
         </div>
     </div>
 
@@ -136,21 +129,28 @@
         <div class="preview-container">
             <canvas id="canvas"></canvas>
         </div>
-        <label>Message</label>
-        <textarea id="memeInput" oninput="autoGrow(this)">Made With 
-Love By 
-Miko Mempin 🫶</textarea>
+        <label>Enter Message</label>
+        <textarea id="memeInput" oninput="autoGrow(this)">Made 
+With Love 
+By Miko Mempin 🫶</textarea>
         <div class="footer-actions">
             <input type="text" id="filenameInput" class="filename-input" placeholder="basta-meme">
-            <button class="download-btn" onclick="download()">⬇️ DOWNLOAD</button>
+            <button class="download-btn" onclick="download()">
+                <span>⬇️</span>
+                DOWNLOAD PNG
+            </button>
             <button class="share-btn" onclick="shareMeme()">📤 SHARE / COPY IMAGE</button>
         </div>
     </div>
 
     <div class="info-section">
         <h3>How to Use</h3>
-        <p>1. Type your text. 2. Choose a font. 3. Download or Share.</p>
-        <p style="font-size: 11px; opacity: 0.5; margin-top: 10px;">Privacy: Your text is never sent to a server. Everything happens on your device.</p>
+        <ol style="padding-left: 20px;">
+            <li><strong>Type:</strong> Enter text. Image resizes automatically.</li>
+            <li><strong>Customize:</strong> Use the dropdown to change fonts.</li>
+            <li><strong>Mode:</strong> Switch Light/Dark mode.</li>
+            <li><strong>Save:</strong> Download your blurry PNG!</li>
+        </ol>
     </div>
 
     <script>
@@ -159,19 +159,39 @@ Miko Mempin 🫶</textarea>
         const input = document.getElementById('memeInput');
         const fontPicker = document.getElementById('fontPicker');
         const modal = document.getElementById('termsModal');
+        const countDisplay = document.getElementById('usedCount');
+
+        // TRACKING USED COUNT
+        let count = parseInt(localStorage.getItem('basta_count')) || 0;
+        updateCountDisplay();
+
+        function updateCountDisplay() {
+            countDisplay.innerText = `Used: ${count} times`;
+        }
+
+        function incrementCount() {
+            count++;
+            localStorage.setItem('basta_count', count);
+            updateCountDisplay();
+        }
+
+        // RESET FUNCTION
+        function resetApp() {
+            if(confirm("Reset all settings and text to normal?")) {
+                input.value = "Made \nWith Love \nBy Miko Mempin 🫶";
+                fontPicker.selectedIndex = 0;
+                autoGrow(input);
+            }
+        }
 
         if (localStorage.getItem('basta_terms') === 'true') { modal.style.display = 'none'; }
         function acceptTerms() { localStorage.setItem('basta_terms', 'true'); modal.style.display = 'none'; }
 
-        const savedTheme = localStorage.getItem('basta_theme') || 'light';
-        document.body.setAttribute('data-theme', savedTheme);
-        document.getElementById('themeIcon').innerText = savedTheme === 'light' ? '☀️' : '🌙';
-
         function toggleTheme() {
-            const next = document.body.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            const current = document.body.getAttribute('data-theme');
+            const next = current === 'light' ? 'dark' : 'light';
             document.body.setAttribute('data-theme', next);
-            localStorage.setItem('basta_theme', next);
-            document.getElementById('themeIcon').innerText = next === 'light' ? '☀️' : '🌙';
+            document.getElementById('themeIcon').innerText = next === 'light' ? '🌙' : '☀️';
         }
 
         function autoGrow(el) { el.style.height = "auto"; el.style.height = (el.scrollHeight) + "px"; draw(); }
@@ -181,25 +201,26 @@ Miko Mempin 🫶</textarea>
             const fontSize = 100; 
             const lineHeight = fontSize * 1.1;
             const selectedFont = fontPicker.value;
-            ctx.font = `normal ${fontSize}px ${selectedFont}`;
+            ctx.font = `bold ${fontSize}px ${selectedFont}`;
             let maxWidth = 0;
             lines.forEach(line => {
                 const w = ctx.measureText(line).width;
                 if (w > maxWidth) maxWidth = w;
             });
-            canvas.width = maxWidth + 60; 
-            canvas.height = (lines.length * lineHeight) + 40;
+            canvas.width = maxWidth + 80; 
+            canvas.height = (lines.length * lineHeight) + 60;
             ctx.filter = 'blur(0.4px) contrast(1.1)';
             ctx.fillStyle = "white"; 
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.font = `normal ${fontSize}px ${selectedFont}`;
+            ctx.font = `bold ${fontSize}px ${selectedFont}`;
             ctx.fillStyle = "black";
             ctx.textBaseline = "top";
-            lines.forEach((line, i) => { ctx.fillText(line, 30, (i * lineHeight) + 20); });
+            lines.forEach((line, i) => { ctx.fillText(line, 40, (i * lineHeight) + 30); });
             ctx.filter = 'none';
         }
 
         function download() {
+            incrementCount();
             const link = document.createElement('a');
             link.download = (document.getElementById('filenameInput').value || 'basta-meme') + '.png';
             link.href = canvas.toDataURL('image/png');
@@ -207,20 +228,15 @@ Miko Mempin 🫶</textarea>
         }
 
         async function shareMeme() {
+            incrementCount();
             canvas.toBlob(async (blob) => {
                 const file = new File([blob], 'basta.png', { type: 'image/png' });
                 if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                    try {
-                        await navigator.share({ files: [file], title: 'Basta Generator' });
-                    } catch (err) { console.log("Share failed", err); }
+                    await navigator.share({ files: [file] });
                 } else {
-                    try {
-                        const item = new ClipboardItem({ "image/png": blob });
-                        await navigator.clipboard.write([item]);
-                        alert("Image copied to clipboard!");
-                    } catch (err) {
-                        alert("Sharing not supported on this browser.");
-                    }
+                    const item = new ClipboardItem({ "image/png": blob });
+                    await navigator.clipboard.write([item]);
+                    alert("Copied to clipboard!");
                 }
             });
         }
@@ -228,4 +244,4 @@ Miko Mempin 🫶</textarea>
         window.onload = () => autoGrow(input);
     </script>
 </body>
-</html>
+    </html>
