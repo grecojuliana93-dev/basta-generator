@@ -41,6 +41,7 @@
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--overlay-bg); display: flex; align-items: center;
             justify-content: center; z-index: 10000; backdrop-filter: blur(15px);
+            display: none; /* Controlled by JS */
         }
         .modal-box {
             background: var(--card-bg); width: 85%; max-width: 350px;
@@ -51,7 +52,7 @@
         /* HEADER */
         .header { width: 100%; max-width: 500px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .controls { display: flex; gap: 10px; align-items: center; }
-        .font-picker { padding: 8px; border-radius: 10px; background: var(--card-bg); color: var(--text-color); border: 1px solid var(--border-color); font-size: 12px; cursor: pointer; }
+        .font-picker { padding: 8px; border-radius: 10px; background: var(--card-bg); color: var(--text-color); border: 1px solid var(--border-color); font-size: 12px; }
         .icon-btn { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--text-color); padding: 5px; }
 
         /* MAIN CARD */
@@ -63,7 +64,7 @@
 
         .canvas-wrap {
             width: 100%; background: #ffffff; border-radius: 20px;
-            overflow: hidden; margin-bottom: 20px; display: flex; justify-content: center;
+            overflow: hidden; margin-bottom: 20px; display: flex; justify-content: flex-start;
         }
 
         textarea {
@@ -81,7 +82,6 @@
         .info-section { width: 100%; max-width: 500px; margin-top: 20px; color: var(--text-color); }
         .info-section h3 { font-size: 18px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 15px; }
         .info-section p, .info-section li { font-size: 14px; opacity: 0.7; line-height: 1.6; }
-        .example-box { background: white; color: black; padding: 15px; border-radius: 15px; text-align: center; margin-top: 10px; font-size: 14px; }
     </style>
 </head>
 <body id="mainBody">
@@ -91,9 +91,8 @@
             <h2 style="margin-top:0">Guidelines</h2>
             <ul style="text-align: left; font-size: 13px; opacity: 0.8; margin-bottom: 20px;">
                 <li>Usage: Personal use only.</li>
-                <li>Content: Avoid offensive or harmful text.</li>
-                <li>Rendering: Fonts are local and may vary by device.</li>
-                <li>Aesthetic: The blur is an intentional screenshot effect.</li>
+                <li>Content: Avoid offensive text.</li>
+                <li>Aesthetic: The blur is intentional.</li>
             </ul>
             <button style="width:100%; padding:15px; border-radius:15px; border:none; background:var(--btn-bg); color:var(--btn-text); font-weight:bold; cursor:pointer" onclick="closeTerms()">I AGREE</button>
         </div>
@@ -130,18 +129,8 @@ Miko Mempin 🫶</textarea>
 
     <div class="info-section">
         <h3>How to Use</h3>
-        <ol style="padding-left: 20px;">
-            <li><strong>Type:</strong> Enter your message in the box.</li>
-            <li><strong>Customize:</strong> Use the 🔄 button to reset or use the font dropdown.</li>
-            <li><strong>Mode:</strong> Toggle 🌙 for dark or light aesthetic.</li>
-            <li><strong>Save:</strong> Click Download to save your blurry PNG.</li>
-        </ol>
-
-        <h3 style="margin-top:30px">Example Output</h3>
-        <p>Your creation will look like a high-quality screenshot:</p>
-        <div class="example-box">
-            Basta generator works<br>perfectly. 🫶
-        </div>
+        <p>1. Type your text. 2. Select Font. 3. Download or Share.</p>
+        <p>Press 🔄 to reset the count, clear text, and see Guidelines again.</p>
     </div>
 
     <script>
@@ -150,10 +139,11 @@ Miko Mempin 🫶</textarea>
         const textIn = document.getElementById('textIn');
         const fontSel = document.getElementById('fontSel');
         const body = document.getElementById('mainBody');
+        const modal = document.getElementById('termsModal');
 
-        // Restore acceptance memory
-        if (localStorage.getItem('basta_terms_accepted') === 'true') {
-            document.getElementById('termsModal').style.display = 'none';
+        // Check acceptance
+        if (localStorage.getItem('basta_terms_accepted') !== 'true') {
+            modal.style.display = 'flex';
         }
 
         let usedCount = parseInt(localStorage.getItem('basta_uses')) || 0;
@@ -161,20 +151,22 @@ Miko Mempin 🫶</textarea>
 
         function closeTerms() {
             localStorage.setItem('basta_terms_accepted', 'true');
-            document.getElementById('termsModal').style.display = 'none';
+            modal.style.display = 'none';
             autoSize(textIn);
         }
 
         function toggleDark() {
             body.classList.toggle('light-mode');
-            const isLight = body.classList.contains('light-mode');
-            document.getElementById('themeIcon').innerText = isLight ? '☀️' : '🌙';
+            document.getElementById('themeIcon').innerText = body.classList.contains('light-mode') ? '☀️' : '🌙';
         }
 
+        // FULL REFRESH LOGIC
         function hardReset() {
-            textIn.value = "Made With \nLove By \nMiko Mempin 🫶";
-            fontSel.selectedIndex = 0;
-            autoSize(textIn);
+            if(confirm("This will reset the count, clear all memory, and show guidelines again. Continue?")) {
+                localStorage.removeItem('basta_terms_accepted');
+                localStorage.setItem('basta_uses', '0');
+                location.reload(); // Reloads page to show terms and reset everything
+            }
         }
 
         function autoSize(el) {
@@ -187,8 +179,6 @@ Miko Mempin 🫶</textarea>
             const lines = textIn.value.split('\n');
             const size = 100;
             const font = fontSel.value;
-            
-            // Set weight to 300 for that "Normal/Thin" look
             ctx.font = `300 ${size}px ${font}`;
             
             let maxW = 0;
@@ -207,7 +197,8 @@ Miko Mempin 🫶</textarea>
             ctx.fillStyle = "black";
             ctx.font = `300 ${size}px ${font}`;
             ctx.textBaseline = "top";
-            
+            ctx.textAlign = "left"; // FORCED LEFT ALIGNMENT
+
             lines.forEach((l, i) => {
                 ctx.fillText(l, 50, (i * (size * 1.2)) + 40);
             });
@@ -225,7 +216,7 @@ Miko Mempin 🫶</textarea>
             canvas.toBlob(blob => {
                 const item = new ClipboardItem({ "image/png": blob });
                 navigator.clipboard.write([item]).then(() => {
-                    alert("Copied to clipboard!");
+                    alert("Copied!");
                     addCount();
                 });
             });
@@ -237,7 +228,7 @@ Miko Mempin 🫶</textarea>
             document.getElementById('counterDisplay').innerText = `Used: ${usedCount} times`;
         }
 
-        window.onload = () => autoSize(textIn);
+        window.onload = () => { if(modal.style.display !== 'flex') autoSize(textIn); };
     </script>
 </body>
 </html>
