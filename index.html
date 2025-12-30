@@ -11,6 +11,8 @@
             --text-color: #1d1d1f;
             --accent-red: #e91e63;
             --border-color: #e0e0e0;
+            --btn-bg: #000000;
+            --btn-text: #ffffff;
         }
 
         [data-theme="dark"] {
@@ -18,6 +20,8 @@
             --card-bg: #1e1e1e;
             --text-color: #f5f5f7;
             --border-color: #333333;
+            --btn-bg: #ffffff;
+            --btn-text: #000000;
         }
 
         body {
@@ -29,7 +33,7 @@
             align-items: center;
             padding: 20px;
             margin: 0;
-            transition: 0.3s;
+            transition: background-color 0.3s, color 0.3s;
         }
 
         .header { width: 100%; max-width: 500px; display: flex; justify-content: space-between; margin-bottom: 20px; }
@@ -57,6 +61,7 @@
             border: 1px solid var(--border-color);
             margin-bottom: 15px;
             display: flex;
+            justify-content: center;
         }
 
         canvas { max-width: 100%; height: auto; display: block; background: white; }
@@ -84,11 +89,10 @@
             background: var(--bg-color); color: var(--text-color); font-size: 13px;
         }
         .download-btn {
-            background: #000; color: white; border: none; border-radius: 10px;
-            font-weight: bold; cursor: pointer; font-size: 13px;
+            background: var(--btn-bg); color: var(--btn-text); border: none; border-radius: 10px;
+            font-weight: bold; cursor: pointer; font-size: 13px; transition: 0.2s;
         }
 
-        /* GUIDE SECTION */
         .guide-box {
             width: 100%;
             max-width: 500px;
@@ -104,7 +108,7 @@
         .guide-box li { margin-bottom: 8px; }
     </style>
 </head>
-<body data-theme="light">
+<body>
 
     <div class="header">
         <div class="title-group">
@@ -135,10 +139,9 @@ Miko Mempin 🫶</textarea>
     <div class="guide-box">
         <h2>How to Use</h2>
         <ul>
-            <li><strong>Type Exactly:</strong> What you see in the text box is what you get. Use <strong>Enter</strong> for new lines.</li>
-            <li><strong>Zero Cut-Off:</strong> The width expands to fit your longest word so nothing is sliced.</li>
-            <li><strong>Bottom Crop:</strong> The white board ends exactly after your last line—no empty space underneath.</li>
-            <li><strong>Download:</strong> Click the black button to save your custom-sized image.</li>
+            <li><strong>Type Exactly:</strong> Use <strong>Enter</strong> for new lines.</li>
+            <li><strong>Zero Cut-Off:</strong> Canvas expands to fit your longest word.</li>
+            <li><strong>Memory:</strong> Dark mode preference is saved automatically!</li>
         </ul>
     </div>
 
@@ -146,180 +149,20 @@ Miko Mempin 🫶</textarea>
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         const input = document.getElementById('memeInput');
+        const themeIcon = document.getElementById('themeIcon');
+
+        // Check for saved theme on load
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.body.setAttribute('data-theme', savedTheme);
+        themeIcon.innerText = savedTheme === 'light' ? '☀️' : '🌙';
 
         function toggleTheme() {
-            const body = document.body;
-            document.getElementById('themeIcon').innerText = body.getAttribute('data-theme') === 'light' ? '🌙' : '☀️';
-            body.setAttribute('data-theme', body.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
-        }
-
-        function autoGrow(el) {
-            el.style.height = "auto";
-            el.style.height = (el.scrollHeight) + "px";
-            draw();
-        }
-
-        function draw() {
-            const rawText = input.value;
-            const lines = rawText.split('\n');
-            const fontSize = 36;  // Changed: Reduced from 180px to 36px for normal-sized text
-            const lineHeight = fontSize * 1.2;  // Adjusted for better spacing
-
-            ctx.font = `${fontSize}px Arial, sans-serif`;  // Normal font weight
+            const currentTheme = document.body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
             
-            // Measure the widest line to prevent cutting
-            let maxWidth = 0;
-            lines.forEach(line => {
-                const w = ctx.measureText(line).width;
-                if (w > maxWidth) maxWidth = w;
-            });
-
-            // Set Canvas to exact content size
-            canvas.width = maxWidth + 20; 
-            canvas.height = lines.length * lineHeight;
-
-            // Draw Background
-            ctx.fillStyle = "white"; 
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            // Draw Text
-            ctx.font = `${fontSize}px Arial, sans-serif`;  // Normal font weight
-            ctx.fillStyle = "black";
-            ctx.textAlign = "left";
-            ctx.textBaseline = "top";
-
-            lines.forEach((line, i) => {
-                ctx.fillText(line, 0, i * lineHeight);
-            });
-        }
-
-        function download() {
-            const link = document.createElement('a');
-            link.download = (document.getElementById('filenameInput').value || 'basta-meme') + '.png';
-            link.href = canvas.toDataURL();
-            link.click();
-        }
-
-        autoGrow(input);
-    </script>
-</body>
-</html>        .title-group p { margin: 0; font-size: 11px; opacity: 0.6; text-transform: uppercase; }
-        
-        .theme-toggle { background: none; border: none; font-size: 22px; cursor: pointer; }
-
-        .card {
-            background: var(--card-bg);
-            width: 100%;
-            max-width: 500px;
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            box-sizing: border-box;
-            margin-bottom: 20px;
-        }
-
-        .preview-container {
-            width: 100%;
-            background: #e5e5e5;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-            margin-bottom: 15px;
-            display: flex;
-        }
-
-        canvas { max-width: 100%; height: auto; display: block; background: white; }
-
-        label { display: block; font-size: 11px; font-weight: 800; margin-bottom: 8px; opacity: 0.8; }
-
-        textarea {
-            width: 100%;
-            min-height: 120px;
-            background: var(--bg-color);
-            border: 1px solid var(--border-color);
-            color: var(--text-color);
-            padding: 12px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            resize: none;
-            font-family: inherit;
-            font-size: 16px;
-            box-sizing: border-box;
-        }
-
-        .footer-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-        .filename-input {
-            padding: 12px; border-radius: 10px; border: 1px solid var(--border-color);
-            background: var(--bg-color); color: var(--text-color); font-size: 13px;
-        }
-        .download-btn {
-            background: #000; color: white; border: none; border-radius: 10px;
-            font-weight: bold; cursor: pointer; font-size: 13px;
-        }
-
-        /* GUIDE SECTION */
-        .guide-box {
-            width: 100%;
-            max-width: 500px;
-            background: var(--card-bg);
-            padding: 20px;
-            border-radius: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.03);
-            font-size: 13px;
-            line-height: 1.5;
-        }
-        .guide-box h2 { font-size: 16px; margin-top: 0; color: var(--accent-red); }
-        .guide-box ul { padding-left: 18px; margin-bottom: 0; }
-        .guide-box li { margin-bottom: 8px; }
-    </style>
-</head>
-<body data-theme="light">
-
-    <div class="header">
-        <div class="title-group">
-            <h1>BASTA GENERATOR</h1>
-            <p>Created by Miko Mempin</p>
-        </div>
-        <button class="theme-toggle" onclick="toggleTheme()" id="themeIcon">☀️</button>
-    </div>
-
-    <div class="card">
-        <div class="preview-container">
-            <canvas id="canvas"></canvas>
-        </div>
-
-        <label>Enter Message</label>
-        <textarea id="memeInput" oninput="autoGrow(this)">Made
-with 
-love by 
-Miko Mempin 🫶</textarea>
-
-        <label>File Name</label>
-        <div class="footer-actions">
-            <input type="text" id="filenameInput" class="filename-input" placeholder="basta-meme">
-            <button class="download-btn" onclick="download()">⬇️ DOWNLOAD PNG</button>
-        </div>
-    </div>
-
-    <div class="guide-box">
-        <h2>How to Use</h2>
-        <ul>
-            <li><strong>Type Exactly:</strong> What you see in the text box is what you get. Use <strong>Enter</strong> for new lines.</li>
-            <li><strong>Zero Cut-Off:</strong> The width expands to fit your longest word so nothing is sliced.</li>
-            <li><strong>Bottom Crop:</strong> The white board ends exactly after your last line—no empty space underneath.</li>
-            <li><strong>Download:</strong> Click the black button to save your custom-sized image.</li>
-        </ul>
-    </div>
-
-    <script>
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
-        const input = document.getElementById('memeInput');
-
-        function toggleTheme() {
-            const body = document.body;
-            document.getElementById('themeIcon').innerText = body.getAttribute('data-theme') === 'light' ? '🌙' : '☀️';
-            body.setAttribute('data-theme', body.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
+            document.body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            themeIcon.innerText = newTheme === 'light' ? '☀️' : '🌙';
         }
 
         function autoGrow(el) {
@@ -331,214 +174,45 @@ Miko Mempin 🫶</textarea>
         function draw() {
             const rawText = input.value;
             const lines = rawText.split('\n');
-            const fontSize = 180;
-            const lineHeight = fontSize * 1.1;
-
-            ctx.font = `${fontSize}px Arial, sans-serif`;  // Normal font weight (no bold)
-            
-            // Measure the widest line to prevent cutting
-            let maxWidth = 0;
-            lines.forEach(line => {
-                const w = ctx.measureText(line).width;
-                if (w > maxWidth) maxWidth = w;
-            });
-
-            // Set Canvas to exact content size
-            canvas.width = maxWidth + 20; 
-            canvas.height = lines.length * lineHeight;
-
-            // Draw Background
-            ctx.fillStyle = "white"; 
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            // Draw Text
-            ctx.font = `${fontSize}px Arial, sans-serif`;  // Normal font weight (no bold)
-            ctx.fillStyle = "black";
-            ctx.textAlign = "left";
-            ctx.textBaseline = "top";
-
-            lines.forEach((line, i) => {
-                ctx.fillText(line, 0, i * lineHeight);
-            });
-        }
-
-        function download() {
-            const link = document.createElement('a');
-            link.download = (document.getElementById('filenameInput').value || 'basta-meme') + '.png';
-            link.href = canvas.toDataURL();
-            link.click();
-        }
-
-        autoGrow(input);
-    </script>
-</body>
-</html>        .title-group p { margin: 0; font-size: 11px; opacity: 0.6; text-transform: uppercase; }
-        
-        .theme-toggle { background: none; border: none; font-size: 22px; cursor: pointer; }
-
-        .card {
-            background: var(--card-bg);
-            width: 100%;
-            max-width: 500px;
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            box-sizing: border-box;
-            margin-bottom: 20px;
-        }
-
-        .preview-container {
-            width: 100%;
-            background: #e5e5e5;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-            margin-bottom: 15px;
-            display: flex;
-        }
-
-        canvas { max-width: 100%; height: auto; display: block; background: white; }
-
-        label { display: block; font-size: 11px; font-weight: 800; margin-bottom: 8px; opacity: 0.8; }
-
-        textarea {
-            width: 100%;
-            min-height: 120px;
-            background: var(--bg-color);
-            border: 1px solid var(--border-color);
-            color: var(--text-color);
-            padding: 12px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            resize: none;
-            font-family: inherit;
-            font-size: 16px;
-            box-sizing: border-box;
-        }
-
-        .footer-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-        .filename-input {
-            padding: 12px; border-radius: 10px; border: 1px solid var(--border-color);
-            background: var(--bg-color); color: var(--text-color); font-size: 13px;
-        }
-        .download-btn {
-            background: #000; color: white; border: none; border-radius: 10px;
-            font-weight: bold; cursor: pointer; font-size: 13px;
-        }
-
-        /* GUIDE SECTION */
-        .guide-box {
-            width: 100%;
-            max-width: 500px;
-            background: var(--card-bg);
-            padding: 20px;
-            border-radius: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.03);
-            font-size: 13px;
-            line-height: 1.5;
-        }
-        .guide-box h2 { font-size: 16px; margin-top: 0; color: var(--accent-red); }
-        .guide-box ul { padding-left: 18px; margin-bottom: 0; }
-        .guide-box li { margin-bottom: 8px; }
-    </style>
-</head>
-<body data-theme="light">
-
-    <div class="header">
-        <div class="title-group">
-            <h1>BASTA GENERATOR</h1>
-            <p>Created by Miko Mempin</p>
-        </div>
-        <button class="theme-toggle" onclick="toggleTheme()" id="themeIcon">☀️</button>
-    </div>
-
-    <div class="card">
-        <div class="preview-container">
-            <canvas id="canvas"></canvas>
-        </div>
-
-        <label>Enter Message</label>
-        <textarea id="memeInput" oninput="autoGrow(this)">Made
-with 
-love by 
-Miko Mempin 🫶</textarea>
-
-        <label>File Name</label>
-        <div class="footer-actions">
-            <input type="text" id="filenameInput" class="filename-input" placeholder="basta-meme">
-            <button class="download-btn" onclick="download()">⬇️ DOWNLOAD PNG</button>
-        </div>
-    </div>
-
-    <div class="guide-box">
-        <h2>How to Use</h2>
-        <ul>
-            <li><strong>Type Exactly:</strong> What you see in the text box is what you get. Use <strong>Enter</strong> for new lines.</li>
-            <li><strong>Zero Cut-Off:</strong> The width expands to fit your longest word so nothing is sliced.</li>
-            <li><strong>Bottom Crop:</strong> The white board ends exactly after your last line—no empty space underneath.</li>
-            <li><strong>Download:</strong> Click the black button to save your custom-sized image.</li>
-        </ul>
-    </div>
-
-    <script>
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
-        const input = document.getElementById('memeInput');
-
-        function toggleTheme() {
-            const body = document.body;
-            document.getElementById('themeIcon').innerText = body.getAttribute('data-theme') === 'light' ? '🌙' : '☀️';
-            body.setAttribute('data-theme', body.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
-        }
-
-        function autoGrow(el) {
-            el.style.height = "auto";
-            el.style.height = (el.scrollHeight) + "px";
-            draw();
-        }
-
-        function draw() {
-            const rawText = input.value;
-            const lines = rawText.split('\n');
-            const fontSize = 180;
+            const fontSize = 120; // High res size
             const lineHeight = fontSize * 1.1;
 
             ctx.font = `900 ${fontSize}px Arial, sans-serif`;
             
-            // Measure the widest line to prevent cutting
             let maxWidth = 0;
             lines.forEach(line => {
                 const w = ctx.measureText(line).width;
                 if (w > maxWidth) maxWidth = w;
             });
 
-            // Set Canvas to exact content size
-            canvas.width = maxWidth + 20; 
-            canvas.height = lines.length * lineHeight;
+            canvas.width = maxWidth + 40; 
+            canvas.height = (lines.length * lineHeight) + 20;
 
-            // Draw Background
             ctx.fillStyle = "white"; 
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Draw Text
             ctx.font = `900 ${fontSize}px Arial, sans-serif`;
             ctx.fillStyle = "black";
             ctx.textAlign = "left";
             ctx.textBaseline = "top";
 
             lines.forEach((line, i) => {
-                ctx.fillText(line, 0, i * lineHeight);
+                ctx.fillText(line, 20, (i * lineHeight) + 10);
             });
         }
 
         function download() {
             const link = document.createElement('a');
-            link.download = (document.getElementById('filenameInput').value || 'basta-meme') + '.png';
-            link.href = canvas.toDataURL();
+            const name = document.getElementById('filenameInput').value || 'basta-meme';
+            link.download = name + '.png';
+            link.href = canvas.toDataURL('image/png');
             link.click();
         }
 
-        autoGrow(input);
+        // Initialize
+        window.onload = () => {
+            autoGrow(input);
+        };
     </script>
 </body>
 </html>
